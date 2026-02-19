@@ -150,6 +150,7 @@ class LinkedList {
         }
 
         joinStart.nextNode = joinEnd;
+        if (joinEnd === null) this.#tail = joinStart;
       }
 
       this.#length = this.#length + values.length;
@@ -171,8 +172,13 @@ class LinkedList {
           currentNode = currentNode.nextNode;
         }
       }
+
       if (prevNode) prevNode.nextNode = currentNode.nextNode;
       else this.#head = currentNode.nextNode;
+
+      if (this.#tail === currentNode) this.#tail = prevNode ? prevNode : null;
+
+      currentNode.clear();
       this.#length--;
     }
   }
