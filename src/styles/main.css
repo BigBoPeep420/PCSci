@@ -1,0 +1,25 @@
+.bstSection {
+  font-size: 0.9rem;
+  .step {
+    margin-top: 2rem;
+    font-size: 1.3rem;
+  }
+
+  .op {
+    font-family: monospace;
+    background-color: rgba(0, 0, 0, 0.15);
+    margin: 1rem 0 0.5rem 0;
+    font-weight: 900;
+  }
+
+  .bstOutput {
+    font-family: monospace;
+    background-color: rgba(0, 0, 0, 0.15);
+    p {
+      margin: 0;
+    }
+  }
+  .bstOutput + .bstOutput {
+    margin-top: 0.5rem;
+  }
+}

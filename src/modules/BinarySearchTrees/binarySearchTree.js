@@ -14,10 +14,6 @@ class Node {
 class BST {
   #root;
 
-  /**
-   *
-   * @param {array} initialValues - (Optional) Initial values to populate list with.
-   */
   constructor(initialValues = []) {
     this.#root = null;
     if (initialValues) {
@@ -26,14 +22,6 @@ class BST {
     }
   }
 
-  /**
-   * Recursive function to build binary tree from sorted array
-   *
-   * @param {array} array Initial data to populate tree
-   * @param {number} start Array index to start with
-   * @param {number} end Array index to end with
-   * @returns Root node of finished tree
-   */
   #buildTree(array, start, end) {
     if (start > end) return null;
     let mid = start + Math.floor((end - start) / 2);
@@ -43,11 +31,6 @@ class BST {
     return root;
   }
 
-  /**
-   * Sorts an array by value
-   * @param {array} array - Array to sort
-   * @returns New Sorted Array
-   */
   #sortArray(array) {
     return array.sort((a, b) => {
       if (a < b) return -1;
@@ -64,10 +47,20 @@ class BST {
     return node;
   }
 
-  /**
-   *
-   * @param {array} array - (Optional) Array of new data to build from. If empty, tree resets to empty.
-   */
+  #branchHeight(node, checkBalance = false) {
+    if (!node) return -1;
+
+    const left = this.#branchHeight(node.left, checkBalance);
+    if (checkBalance && left === -Infinity) return -Infinity;
+
+    const right = this.#branchHeight(node.right, checkBalance);
+    if (checkBalance && right === -Infinity) return -Infinity;
+
+    if (checkBalance && Math.abs(left - right) > 1) return -Infinity;
+
+    return Math.max(left, right) + 1;
+  }
+
   reset(array = []) {
     if (!array) this.#root = null;
     else {
@@ -76,11 +69,6 @@ class BST {
     }
   }
 
-  /**
-   * Searches tree for value and returns true or false
-   * @param {*} value Value to search for
-   * @returns True if found, false otherwise
-   */
   includes(value) {
     let currentNode = this.#root;
     while (currentNode) {
@@ -130,15 +118,80 @@ class BST {
     if (!callback)
       throw new Error(`BST.forEachLevelOrder: Must provide callback function`);
 
+    if (!this.#root) return;
+
     const q = [this.#root];
     while (q.length > 0) {
       const currentNode = q.shift();
       if (currentNode.left) q.push(currentNode.left);
       if (currentNode.right) q.push(currentNode.right);
-      return callback(currentNode.value);
+      callback(currentNode.value);
     }
+  }
 
-    q.forEach((node) => callback(node.value));
+  forEachInOrder(callback) {
+    const traverse = (node) => {
+      if (!node) return;
+      traverse(node.left);
+      callback(node.value);
+      traverse(node.right);
+    };
+    traverse(this.#root);
+  }
+
+  forEachPreOrder(callback) {
+    const traverse = (node) => {
+      if (!node) return;
+      callback(node.value);
+      traverse(node.left);
+      traverse(node.right);
+    };
+    traverse(this.#root);
+  }
+
+  forEachPostOrder(callback) {
+    const traverse = (node) => {
+      if (!node) return;
+      traverse(node.left);
+      traverse(node.right);
+      callback(node.value);
+    };
+    traverse(this.#root);
+  }
+
+  height(value) {
+    let currentNode = this.#root;
+    while (currentNode) {
+      if (currentNode.value === value) break;
+      currentNode =
+        value < currentNode.value ? currentNode.left : currentNode.right;
+    }
+    if (!currentNode) return undefined;
+
+    return this.#branchHeight(currentNode);
+  }
+
+  depth(value) {
+    let depth = -1;
+    let currentNode = this.#root;
+    while (currentNode) {
+      if (currentNode.value === value) return depth + 1;
+      currentNode =
+        value < currentNode.value ? currentNode.left : currentNode.right;
+      depth++;
+    }
+  }
+
+  isBalanced() {
+    return this.#branchHeight(this.#root, true) !== -Infinity;
+  }
+
+  rebalance() {
+    const newArr = [];
+    this.forEachInOrder((value) => {
+      newArr.push(value);
+    });
+    this.#root = this.#buildTree(newArr, 0, newArr.length - 1);
   }
 
   logTree() {
@@ -150,6 +203,19 @@ class BST {
     };
 
     printTree();
+  }
+
+  treeToString() {
+    let output = [];
+    const printTree = (node = this.#root, prefix = "", isLeft = true) => {
+      if (node === null || node === undefined) return;
+      printTree(node.right, `${prefix}${isLeft ? "|   " : "   "}`, false);
+      output.push(`${prefix}${isLeft ? "└── " : "┌── "}${node.value}`);
+      printTree(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+    };
+    printTree();
+
+    return output;
   }
 }
 

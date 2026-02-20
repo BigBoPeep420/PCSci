@@ -10,6 +10,5 @@ list.append("snake");
 list.append("turtle");
 
 const listOutput = list.toString();
-console.log(listOutput);
 
 export { listOutput };

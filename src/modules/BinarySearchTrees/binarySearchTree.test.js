@@ -38,4 +38,24 @@ describe("Test BST", () => {
     bst.delete("grape");
     expect(bst.includes("grape")).toBe(false);
   });
+
+  test("balance checking & rebalancing", () => {
+    const randsSm = Array.from({ length: 30 }, () =>
+      Math.floor(Math.random() * 100 + 1),
+    );
+    bst.reset(randsSm);
+
+    expect(bst.isBalanced()).toBe(true);
+
+    const randsLg = Array.from({ length: 20 }, () =>
+      Math.floor(Math.random() * 100 + 100),
+    );
+    randsLg.forEach((v) => bst.insert(v));
+
+    expect(bst.isBalanced()).toBe(false);
+
+    bst.rebalance();
+
+    expect(bst.isBalanced()).toBe(true);
+  });
 });

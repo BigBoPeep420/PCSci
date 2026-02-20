@@ -11,3 +11,6 @@ If built, the index page will display some outputs from certain projects
 Recursion
 I skipped writing the Fibonacci function without recursion as I accomplished that in
 an earlier assignment.
+
+Binary Search Tree
+Build project and look at index page for a demonstration of BST class
