@@ -54,29 +54,21 @@ class Queue {
 
 function knightsTravails(start, end) {
   const queue = new Queue([start]);
-  const visited = Array.from({ length: 8 }, () => []);
+  const visited = new Set();
+  visited.add(start.toString());
 
-  return findPath(queue, end, visited);
-
-  function findPath(queue, end, visited) {
-    if (queue.empty()) return null;
-
+  while (!queue.empty()) {
     const currentPath = queue.dequeue();
     const lastSquare = currentPath[currentPath.length - 1];
-
-    if (lastSquare[0] === end[0] && lastSquare[1] === end[1]) {
+    if (lastSquare[0] === end[0] && lastSquare[1] === end[1])
       return currentPath;
-    }
-
     const possibleMoves = findMoves(lastSquare);
-    possibleMoves.forEach((move) => {
-      if (visited[move[0]].includes(move[1]) == false) {
-        visited[move[0]].push(move[1]);
+    for (const move of possibleMoves) {
+      if (!visited.has(move.toString())) {
+        visited.add(move.toString());
         queue.enqueue([...currentPath, move]);
       }
-    });
-
-    return findPath(queue, end, visited);
+    }
   }
 
   function findMoves(square) {
