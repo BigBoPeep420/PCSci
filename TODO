@@ -1,0 +1,20 @@
+
+findPath(queue, target, visited)
+  IF queue EMPTY
+    RETURN null
+  
+  currentPath = queue.dequeue()
+  lastSquare = currentPath.lastItem
+
+  IF lastSquare === target
+    RETURN currentPath
+  
+  FOREACH move IN possibleMoves
+    newSquare = lastSquare + move
+
+    IF newSquare is on board AND NOT IN visited
+      ADD newSquare TO visited
+      newPath = [...currentPath, newSquare]
+      ADD newPath TO queue
+  
+  RETURN findPath(queue, target, visited)
